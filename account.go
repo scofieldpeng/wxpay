@@ -32,3 +32,8 @@ func (a *Account) SetCertData(certPath string) {
 	}
 	a.certData = certData
 }
+
+// 设置证书byte数据
+func (a *Account) SetCertBytesData(certData []byte) {
+	a.certData = certData
+}

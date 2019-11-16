@@ -5,11 +5,12 @@ import (
 	"crypto/tls"
 	"encoding/pem"
 	"encoding/xml"
-	"golang.org/x/crypto/pkcs12"
 	"log"
 	"strconv"
 	"strings"
 	"time"
+
+	"golang.org/x/crypto/pkcs12"
 )
 
 func XmlToMap(xmlStr string) Params {

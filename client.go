@@ -67,7 +67,11 @@ func (c *Client) postWithoutCert(url string, params Params) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer response.Body.Close()
+	defer func() {
+		if err := response.Body.Close(); err != nil {
+
+		}
+	}()
 	res, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		return "", err
@@ -134,7 +138,7 @@ func (c *Client) Sign(params Params) string {
 	// 由于切片的元素顺序是不固定，所以这里强制给切片元素加个顺序
 	sort.Strings(keys)
 
-	//创建字符缓冲
+	// 创建字符缓冲
 	var buf bytes.Buffer
 	for _, k := range keys {
 		if len(params.GetString(k)) > 0 {
@@ -157,7 +161,7 @@ func (c *Client) Sign(params Params) string {
 	switch c.signType {
 	case MD5:
 		dataMd5 = md5.Sum(buf.Bytes())
-		str = hex.EncodeToString(dataMd5[:]) //需转换成切片
+		str = hex.EncodeToString(dataMd5[:]) // 需转换成切片
 	case HMACSHA256:
 		h := hmac.New(sha256.New, []byte(c.account.apiKey))
 		h.Write(buf.Bytes())
@@ -384,5 +388,83 @@ func (c *Client) AuthCodeToOpenid(params Params) (Params, error) {
 	if err != nil {
 		return nil, err
 	}
+	return c.processResponseXml(xmlStr)
+}
+
+// 请求单次分账
+func (c *Client) ProfitSharding(params Params) (Params, error) {
+	xmlStr, err := c.postWithCert(UrlProfitingSharding, params)
+	if err != nil {
+		return nil, err
+	}
+
+	return c.processResponseXml(xmlStr)
+}
+
+func (c *Client) MultiProfitingSharding(params Params) (Params, error) {
+	xmlStr, err := c.postWithCert(UrlMultiProfitSharding, params)
+	if err != nil {
+		return nil, err
+	}
+
+	return c.processResponseXml(xmlStr)
+}
+
+func (c *Client) ProfitShardingQuery(params Params) (Params, error) {
+	xmlStr, err := c.postWithCert(UrlProfitShardingQuery, params)
+	if err != nil {
+		return nil, err
+	}
+
+	return c.processResponseXml(xmlStr)
+}
+
+// 添加分账接收方
+func (c *Client) AddProfitShardingReceiver(params Params) (Params, error) {
+	xmlStr, err := c.postWithCert(UrlAddProfitReceiver, params)
+	if err != nil {
+		return nil, err
+	}
+
+	return c.processResponseXml(xmlStr)
+}
+
+// 移除分账接收方
+func (c *Client) RemoveProfitShardingReceiver(params Params) (Params, error) {
+	xmlStr, err := c.postWithCert(UrlRemoveProfitReceiver, params)
+	if err != nil {
+		return nil, err
+	}
+
+	return c.processResponseXml(xmlStr)
+}
+
+// 完结分账
+func (c *Client) FinishProfitSharding(params Params) (Params, error) {
+	xmlStr, err := c.postWithCert(UrlProfitShardingFinish, params)
+	if err != nil {
+		return nil, err
+	}
+
+	return c.processResponseXml(xmlStr)
+}
+
+// 分账回退
+func (c *Client) ProfitShardingReturn(params Params) (Params, error) {
+	xmlStr, err := c.postWithCert(UrlProfitShardingReturn, params)
+	if err != nil {
+		return nil, err
+	}
+
+	return c.processResponseXml(xmlStr)
+}
+
+// 分账回退结果查询
+func (c *Client) ProfitShardingReturnQuery(params Params) (Params, error) {
+	xmlStr, err := c.postWithCert(UrlProfitShardingReturn, params)
+	if err != nil {
+		return nil, err
+	}
+
 	return c.processResponseXml(xmlStr)
 }
