@@ -6,7 +6,9 @@ const (
 	HMACSHA256                 = "HMAC-SHA256"
 	MD5                        = "MD5"
 	Sign                       = "sign"
+	// 微信扫码支付
 	MicroPayUrl                = "https://api.mch.weixin.qq.com/pay/micropay"
+	//
 	UnifiedOrderUrl            = "https://api.mch.weixin.qq.com/pay/unifiedorder"
 	OrderQueryUrl              = "https://api.mch.weixin.qq.com/pay/orderquery"
 	ReverseUrl                 = "https://api.mch.weixin.qq.com/secapi/pay/reverse"

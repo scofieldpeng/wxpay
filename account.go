@@ -1,39 +1,24 @@
 package wxpay
 
-import (
-	"io/ioutil"
-	"log"
-)
-
 type Account struct {
 	appID     string
+	subAppId  string
 	mchID     string
+	subMchId  string
 	apiKey    string
-	certData  []byte
+	cert      string
+	key       string
 	isSandbox bool
 }
 
 // 创建微信支付账号
-func NewAccount(appID string, mchID string, apiKey string, isSanbox bool) *Account {
+func NewAccount(appID, mchID, apiKey, cert, key string, isSanbox bool) *Account {
 	return &Account{
 		appID:     appID,
 		mchID:     mchID,
 		apiKey:    apiKey,
 		isSandbox: isSanbox,
+		cert:      cert,
+		key:       key,
 	}
-}
-
-// 设置证书
-func (a *Account) SetCertData(certPath string) {
-	certData, err := ioutil.ReadFile(certPath)
-	if err != nil {
-		log.Println("读取证书失败")
-		return
-	}
-	a.certData = certData
-}
-
-// 设置证书byte数据
-func (a *Account) SetCertBytesData(certData []byte) {
-	a.certData = certData
 }
