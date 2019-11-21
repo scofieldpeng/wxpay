@@ -52,7 +52,9 @@ func (c *Client) SetAccount(account *Account) {
 // 向 params 中添加 appid、mch_id、nonce_str、sign_type、sign
 func (c *Client) fillRequestData(params Params) Params {
 	params["appid"] = c.account.appID
+	params["sub_appid"] = c.account.subAppId
 	params["mch_id"] = c.account.mchID
+	params["sub_mch_id"] = c.account.subMchId
 	params["nonce_str"] = nonceStr()
 	params["sign_type"] = c.signType
 	params["sign"] = c.Sign(params)
@@ -81,12 +83,14 @@ func (c *Client) postWithoutCert(url string, params Params) (string, error) {
 
 // https need cert post
 func (c *Client) postWithCert(url string, params Params) (string, error) {
-	if c.account.certData == nil {
+	if c.account.cert == "" || c.account.key == "" {
 		return "", errors.New("证书数据为空")
 	}
 
-	// 将pkcs12证书转成pem
-	cert := pkcs12ToPem(c.account.certData, c.account.mchID)
+	cert, err := tls.X509KeyPair([]byte(c.account.cert), []byte(c.account.key))
+	if err != nil {
+		return "", errors.New("证书格式不正确")
+	}
 
 	config := &tls.Config{
 		Certificates: []tls.Certificate{cert},
@@ -401,6 +405,7 @@ func (c *Client) ProfitSharding(params Params) (Params, error) {
 	return c.processResponseXml(xmlStr)
 }
 
+// 请求多次分账
 func (c *Client) MultiProfitingSharding(params Params) (Params, error) {
 	xmlStr, err := c.postWithCert(UrlMultiProfitSharding, params)
 	if err != nil {
@@ -410,6 +415,7 @@ func (c *Client) MultiProfitingSharding(params Params) (Params, error) {
 	return c.processResponseXml(xmlStr)
 }
 
+// 分账结果查询
 func (c *Client) ProfitShardingQuery(params Params) (Params, error) {
 	xmlStr, err := c.postWithCert(UrlProfitShardingQuery, params)
 	if err != nil {
@@ -461,7 +467,7 @@ func (c *Client) ProfitShardingReturn(params Params) (Params, error) {
 
 // 分账回退结果查询
 func (c *Client) ProfitShardingReturnQuery(params Params) (Params, error) {
-	xmlStr, err := c.postWithCert(UrlProfitShardingReturn, params)
+	xmlStr, err := c.postWithCert(UrlProfitShardingReturnQuery, params)
 	if err != nil {
 		return nil, err
 	}

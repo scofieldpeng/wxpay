@@ -1,13 +1,13 @@
 package wxpay
 
 const (
-	Fail                       = "FAIL"
-	Success                    = "SUCCESS"
-	HMACSHA256                 = "HMAC-SHA256"
-	MD5                        = "MD5"
-	Sign                       = "sign"
+	Fail       = "FAIL"
+	Success    = "SUCCESS"
+	HMACSHA256 = "HMAC-SHA256"
+	MD5        = "MD5"
+	Sign       = "sign"
 	// 微信扫码支付
-	MicroPayUrl                = "https://api.mch.weixin.qq.com/pay/micropay"
+	MicroPayUrl = "https://api.mch.weixin.qq.com/pay/micropay"
 	//
 	UnifiedOrderUrl            = "https://api.mch.weixin.qq.com/pay/unifiedorder"
 	OrderQueryUrl              = "https://api.mch.weixin.qq.com/pay/orderquery"

@@ -3,7 +3,7 @@ package wxpay
 import "testing"
 
 func TestClient_UnifiedOrder(t *testing.T) {
-	client := NewClient(NewAccount("xxxxx", "xxx", "xxxxx", false))
+	client := NewClient(NewAccount("xxxxx", "xxx", "xxxxx", "", "", false))
 	params := make(Params)
 	params.SetString("body", "test").
 		SetString("out_trade_no", "58867657575757").
